@@ -7,13 +7,14 @@ ec2_client = boto3.client("ec2", region_name="us-east-1")
 def get_latest_ami(owner, ami_name_pattern):
     """ Get the latest AMI from the AMI registry."""
     amazon_linux_filters = [
-        {'Name': 'name', 'Values': ['amzn2-ami-hvm-*-x86_64-gp2']}
+        {'Name': 'name', 'Values': ['al2023-ami-*x86_64']}
     ]
     response = ec2_client.describe_images(
         Owners=[owner],
         Filters=[
             {'Name': 'name', 'Values': [ami_name_pattern]},
-            {'Name': 'state', 'Values': ['available']}
+            {'Name': 'state', 'Values': ['available']},
+            {'Name': 'architecture','Values': ['x86_64']},
         ]
     )
 
@@ -26,5 +27,5 @@ def get_latest_ami(owner, ami_name_pattern):
 if __name__ == "__main__":
     REGION = 'us-east-1'
     OWNER_ACCOUNT = 'amazon'
-    AMI_PATTERN = 'amzn2-ami-hvm-*-x86_64-gp2'
+    AMI_PATTERN = 'al2023-ami-*x86_64'
     get_latest_ami(OWNER_ACCOUNT, AMI_PATTERN)

@@ -3,7 +3,9 @@ from constructs import Construct
 from aws_cdk import (
     Stack,
     aws_lambda as _lambda,
-    Duration
+    Duration,
+    aws_s3 as _s3,
+    aws_s3_deployment as s3_deployment,
                       )
 
 class InfraStack(Stack):
@@ -19,4 +21,18 @@ class InfraStack(Stack):
             code = _lambda.Code.from_asset("src"),
             handler= "handler.handler",
         )
+
+        # copy a Script to S3 Bucket
+        bucket_name = _s3.Bucket.from_bucket_name(
+            self, "ExistingBucket", "cogesak-etl-target"
+        )
+
+        s3_deployment.BucketDeployment(
+            self,
+            "S3Deployment",
+            sources= [s3_deployment.Source.asset("infra/resources/")], # Specify the local file path
+            destination_bucket= bucket_name,
+            destination_key_prefix="reports" # Optional: Specify a different key for the uploaded file
+        )
+
 

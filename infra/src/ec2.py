@@ -15,9 +15,11 @@ class Ec2ConfigGenerators:
         self.environment = self.getEnv()
         self.user_data_file = f"bootsrap.sh"
         self.user_data = self.read_user_data()
-        self.ami_id = get_latest_ami('amazon', 'amzn2-ami-hvm-*-x86_64-gp2')
+        self.ami_id = get_latest_ami('amazon', 'al2023-ami-*x86_64')
         self.instance_type = "t2.micro"
         self.iam_profile = self.assign_iam_profile()
+        self.security_group_ids =self.get_security_group_ids()
+        self.subnet_id = self.get_subnet_id()
 
 
     def assign_iam_profile(self):
@@ -25,7 +27,15 @@ class Ec2ConfigGenerators:
 
     def getEnv(self):
         """ Get the environment variables """
-        return "QA"
+        return "qa"
+
+    def get_security_group_ids(self):
+        """ Get the security group ids """
+        return ["sg-05e5b31eaeb21d0c0"]
+
+    def get_subnet_id(self):
+        """ Get the subnet id """
+        return "subnet-04796085a84126541"
 
     def read_user_data(self):
         """ Read the user data from the Bootstrap Scripts """
@@ -49,6 +59,6 @@ if __name__ == "__main__":
         "region": "us-east-1",
     }
     ec2_configuration = Ec2ConfigGenerators(user_event)
-    print(ec2_configuration.user_data)
+    print(ec2_configuration.ami_id)
 
 
