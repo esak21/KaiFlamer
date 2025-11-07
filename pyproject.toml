@@ -1,0 +1,18 @@
+[project]
+name = "flamer-infra"
+version= "0.1.0"
+description = "Creating the infrastructure for flamer"
+readme ="README.md"
+requires-python = "~=3.11.0"
+dependencies = [
+    "aws-cdk-lib==2.208.0",
+    "constructs>=10.0.0,<11.0.0",
+    "pyspark~=3.5.7",
+    "boto3 >=1.40.67",
+    "requests"
+]
+
+[tool.ruff]
+line-length=150
+target-version ="py311"
+exclude = ["temp/*"]
