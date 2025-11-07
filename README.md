@@ -16,12 +16,29 @@ Enforcing IMDSv2: Cloud providers (like AWS) recommend enforcing IMDSv2 via the 
 ## Set up the Security Groups 
 we need to open the Port 443 if we want to use the SSM and its send commands
 
-## Setting upp the IAM Role
+## Setting up the IAM Role
 we need to Provide the below Policy in EC2 Roles 
 1. AmazonEC2FullAccess
 2. AmazonS3FullAccess
 3. CloudWatchAgentServerPolicy
 4. AmazonSSMManagedInstanceCore
+5. To Create the Subscription filter we need to add the Below Role 
+   ```{
+       "Version": "2012-10-17",
+       "Statement": [
+           {
+               "Effect": "Allow",
+               "Action": "logs:PutSubscriptionFilter",
+               "Resource": "arn:aws:logs:us-east-1:905418448077:log-group:/aws/ec2/cogesak-flamer-ec2-qa-logs:*"
+           },
+           {
+               "Effect": "Allow",
+               "Action": "iam:PassRole",
+               "Resource": "arn:aws:iam::905418448077:role/simpleFirehouseRole"
+           }
+       ]
+   }
+   ```
 
 we need to Provide the below Policy in LAMBDA Roles 
 1. AWSLambdaBasicExecutionRole
@@ -35,6 +52,15 @@ we need to Provide the below Policy in LAMBDA Roles
            }
            ````
 4. 
+
+## Create Kinesis Firehouse IAM Role 
+1. AmazonKinesisFirehoseFullAccess
+```commandline
+
+```
+we can provide the s3 prefix as below 
+`raw_logs/!{timestamp:yyyy}-!{timestamp:MM}-!{timestamp:dd}/`
+
 Command to Verify the user data executed correct or not 
 ```
 # After logging into the instance (via Session Manager or SSH)

@@ -18,6 +18,16 @@ log_print "STARTING THE CLOUDWATCH AGENT"
 
 sudo aws logs create-log-group --log-group-name $LOG_GROUP_NAME --region $REGION
 
+
+sudo aws logs put-subscription-filter \
+    --log-group-name /aws/ec2/my-app-logs \
+    --filter-name ExportToS3ViaFirehose \
+    --destination-arn arn:aws:firehose:ap-south-1:905418448077:deliverystream/Cogesak-log-shipper \
+    --role-arn arn:aws:iam::905418448077:role/simpleFirehouseRole \
+    --filter-pattern "" \
+    --region us-east-1
+echo "subscription filter created"
+
 ### Installing the Cloud watch Agent
 echo "Downloading the CloudWatch Agent"
 wget https://s3.amazonaws.com/amazoncloudwatch-agent/amazon_linux/amd64/latest/amazon-cloudwatch-agent.rpm
@@ -29,9 +39,7 @@ echo "Agent Installed"
 echo "Creating the Cloudwatch agent configuration File"
 sudo bash -c """cat  <<EOT > /opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json
 {
-  \"agent\" : {
-      \"run_as_user\" : \"root\"
-    },
+
     \"logs\" : {
 
           \"force_flush_interval\" : 5,
